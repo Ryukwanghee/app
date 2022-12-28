@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" 
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+ 
+<sqlMap namespace="users">
+	
+	<select id="getUserById" parameterClass="string" resultClass="com.sample.app.vo.User">
+		select
+			user_id					as id,
+			user_password			as password,
+			user_name				as name,
+			user_email				as email,
+			user_enabled			as enabled,
+			user_updated_date		as updatedDate,
+			user_created_date		as createdDate
+		from
+			web_users
+		where
+			user_id = #value#
+	</select>
+	
+	<select id="getUserByEmail" parameterClass="string" resultClass="com.sample.app.vo.User">
+		select
+			user_id					as id,
+			user_password			as password,
+			user_name				as name,
+			user_email				as email,
+			user_enabled			as enabled,
+			user_updated_date		as updatedDate,
+			user_created_date		as createdDate
+		from
+			web_users
+		where
+			user_email = #value#
+	</select>
+	
+	<insert id="insertUser" parameterClass="com.sample.app.vo.User">
+		insert into web_users
+			(user_id, user_password, user_name, user_email)
+		values
+			(#id#, #password#, #name#, #email#)
+	</insert>
+	
+	<update id="updateUser" parameterClass="com.sample.app.vo.User">
+		update
+			web_users
+		set
+			user_password = #password#,
+			user_enabled = #enabled#,
+			user_updated_date = sysdate
+		where
+			user_id = #id#
+	</update>
+</sqlMap>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="https://jakarta.ee/xml/ns/jakartaee"
+	xmlns:web="http://xmlns.jcp.org/xml/ns/javaee"
+	xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd"
+	id="WebApp_ID" version="5.0">
+	
+	<!-- 
+		프론트 컨트롤러 서블릿 배포
+	 -->
+	<servlet>
+		<servlet-name>frontControllerServlet</servlet-name>
+		<servlet-class>com.sample.model2.FrontControllerServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>frontControllerServlet</servlet-name>
+		<url-pattern>*.hta</url-pattern>
+	</servlet-mapping>
+	
+	<!-- 
+		에러 페이지 설정
+		HTTP 응답 코드별로 에러 페이지를 지정할 수 있다.
+	 -->
+	<error-page>
+		<error-code>500</error-code>
+		<location>/WEB-INF/views/error/500.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>404</error-code>
+		<location>/WEB-INF/views/error/404.jsp</location>
+	</error-page>
+</web-app>

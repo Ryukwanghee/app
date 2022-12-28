@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" 
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+ 
+<sqlMap namespace="todos">
+	
+	<insert id="insertTodo" parameterClass="com.sample.app.vo.Todo">
+		insert into web_todos
+			(todo_no, todo_category_no, todo_title, todo_user_id, todo_begin_date, todo_end_date, todo_description)
+		values
+			(WEB_TODOS_SEQ.nextval, #categoryNo#, #title#, #userId#, #beginDate#, #endDate#, #description#)
+	</insert>
+	
+	<select id="getTotalRows" resultClass="int">
+		select
+			count(*)
+		from 
+			web_todos
+		where
+			todo_status != '삭제'
+	</select>
+	
+	<select id="getTodos" parameterClass="map" resultClass="com.sample.app.dto.TodoListDto">
+      select
+         todo_no            as no,
+         todo_category_no   as categoryNo,
+         category_name      as categoryName,
+         todo_title         as title,
+         todo_user_id      as userId,
+         user_name         as userName,
+         todo_begin_date      as beginDate,
+         todo_end_date      as endDate,
+         todo_status         as status,
+         todo_complete_date   as completeDate
+      from (
+         select
+            row_number() over (order by T.todo_no desc) row_numbers,
+            T.todo_no,
+            T.todo_category_no,
+            C.category_name,
+            T.todo_title,
+            T.todo_user_id,
+            U.user_name,
+            T.todo_begin_date,
+            T.todo_end_date,
+            T.todo_complete_date,
+            T.todo_status
+         from
+            web_todos T, web_todo_categories C, web_users U
+         where
+            T.todo_category_no = C.category_no
+            and T.todo_user_id = U.user_id
+            and T.todo_status in ('등록', '완료', '연기', '취소')            
+      )
+      where 
+         row_numbers between #begin# and #end#
+   </select>
+	
+	<select id="getTodoDetailByNo" parameterClass="int" resultClass="com.sample.app.dto.TodoDetailDto">
+		select
+			T.todo_no				as no,
+			T.todo_category_no		as categoryNo,
+			C.category_name			as categoryName,
+			T.todo_title			as title,
+			T.todo_user_id			as userId,
+			U.user_name				as userName,
+			T.todo_begin_date		as beginDate,
+			T.todo_end_date			as endDate,
+			T.todo_complete_date 	as completeDate,
+			T.todo_status			as status,
+			T.todo_description		as description,
+			T.todo_created_date		as createdDate,
+			T.todo_updated_date		as updatedDate
+		from
+			web_todos T, web_todo_categories C, web_users U
+		where
+			T.todo_category_no = C.category_no
+			and T.todo_user_id = U.user_id
+			and T.todo_no = #value#
+	</select>
+
+	<select id="getTodoByNo" parameterClass="int" resultClass="com.sample.app.vo.Todo">
+		select
+			T.todo_no				as no,
+			T.todo_category_no		as categoryNo,
+			T.todo_title			as title,
+			T.todo_user_id			as userId,
+			T.todo_begin_date		as beginDate,
+			T.todo_end_date			as endDate,
+			T.todo_complete_date 	as completeDate,
+			T.todo_status			as status,
+			T.todo_description		as desciption,
+			T.todo_created_date		as createdDate,
+			T.todo_updated_date		as updatedDate
+		from
+			web_todos T
+		where
+			T.todo_no = #value#
+	</select>
+	
+	<update id="updateTodo" parameterClass="com.sample.app.vo.Todo">
+		update 
+			web_todos
+		set
+			todo_category_no = #categoryNo#,
+			todo_title = #title#,
+			todo_begin_date = #beginDate#,
+			todo_end_date = #endDate#,
+			todo_complete_date = #completeDate#,
+			todo_description = #description#,
+			todo_status = #status#,
+			todo_updated_date = sysdate
+		where
+			todo_no = #no#
+	</update>
+</sqlMap>

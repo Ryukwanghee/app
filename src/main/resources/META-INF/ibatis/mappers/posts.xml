@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" 
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+ 
+<sqlMap namespace="posts">
+
+	<insert id="insertPost" parameterClass="com.sample.app.vo.Post">
+		insert into web_posts
+			(post_no, post_title, post_user_id, post_content)
+		values
+			(WEB_POSTS_SEQ.nextval, #title#, #userId#, #content#)
+	</insert>
+	
+	<select id="getTotalRows" resultClass="int">
+		select
+			count(*)
+		from
+			web_posts
+		where
+			post_deleted = 'N'
+	</select>
+	
+	<select id="getPosts" parameterClass="map" resultClass="com.sample.app.dto.PostListDto">
+		select
+			P.post_no				as no,
+			P.post_title			as title,
+			P.post_user_id			as userId,
+			U.user_name				as userName,
+			P.post_read_count		as readCount,
+			P.post_comment_count	as commentCount,
+			P.post_created_date		as createdDate
+		from
+			(select
+				row_number() over (order by post_no desc) row_numbers,
+				post_no,
+				post_title,
+				post_user_id,
+				post_read_count,
+				post_comment_count,
+				post_created_date
+			from
+				web_posts
+			where
+				post_deleted = 'N') P, web_users U
+		where
+			P.post_user_id = U.user_id
+			and P.row_numbers between #begin# and #end#
+	</select>
+	
+	<select id="getPostByNo" parameterClass="int" resultClass="com.sample.app.vo.Post">
+		select
+			post_no	as  no,
+			post_title as title,
+			post_user_id as userId,
+			post_content as content,
+			post_deleted as deleted,
+			post_read_count as readCount,
+			post_comment_count	as commentCount,
+			post_created_date	as createdDate,
+			post_updated_date	as updatedDate
+		from
+			web_posts
+		where
+			post_no = #value#
+	</select>
+	
+	<select id="getPostDetailByNo" parameterClass="int" resultClass="com.sample.app.dto.PostDetailDto">
+		select
+			P.post_no				as no,
+			P.post_title			as title,
+			P.post_user_id			as userId,
+			U.user_name				as userName,
+			P.post_content			as content,
+			P.post_read_count		as readCount,
+			P.post_comment_count	as commentCount,
+			P.post_created_date		as createdDate,
+			P.post_updated_date		as updatedDate
+		from
+			web_posts P, web_users U
+		where
+			P.post_user_id = U.user_id
+			and P.post_no = #value#
+	</select>
+	
+	<update id="updatePost" parameterClass="com.sample.app.vo.Post">
+		update
+			web_posts
+		set
+			post_title = #title#,
+			post_content = #content#,
+			post_read_count = #readCount#,
+			post_comment_count = #commentCount#,
+			post_deleted = #deleted#,
+			post_updated_date = sysdate
+		where
+			post_no = #no#
+	</update>
+</sqlMap>

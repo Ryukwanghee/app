@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" 
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+ 
+<sqlMap namespace="categories">
+	
+	<select id="getAllCategories" resultClass="com.sample.app.vo.Category">
+		select
+			category_no 		as no,
+			category_name		as name
+		from
+			web_todo_categories
+		order by
+			category_no asc
+	</select>
+</sqlMap>

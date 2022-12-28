@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" 
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+ 
+<sqlMap namespace="works">
+	
+	<insert id="insertWork" parameterClass="com.sample.app.vo.Work">
+      insert into web_todo_works
+         (work_no, work_user_id, work_content, work_todo_no)
+      values
+         (WEB_WORKS_SEQ.nextval, #userId#, #content#, #todoNo#)
+   </insert>
+	
+	<select id="getWorksByTodoNo" parameterClass="int" resultClass="com.sample.app.dto.TodoWorkListDto">
+		select
+			W.work_no 			as no,
+			W.work_user_id		as userId,
+			U.user_name			as userName,
+			W.work_content		as content,
+			W.work_todo_no		as todoNo,
+			W.work_created_date as createdDate
+		from 
+			web_todo_works W, web_users U
+		where
+			W.work_user_id = U.user_id
+			and W.work_todo_no = #value#
+		order by 
+			W.work_no asc
+	</select>
+	
+</sqlMap>

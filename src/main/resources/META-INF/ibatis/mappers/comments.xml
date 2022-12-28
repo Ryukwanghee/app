@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" 
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+ 
+<sqlMap namespace="comments">
+	
+	<select id="getCommentsByPostNo" parameterClass="int" resultClass="com.sample.app.dto.CommentListDto">
+		select
+			C.comment_no				as no,
+			C.comment_user_id			as userId,
+			U.user_name					as userName,
+			C.comment_content			as content,
+			C.comment_created_date		as createdDate,
+			C.comment_post_no			as postNo
+		from
+			web_comments C, web_users U
+		where
+			C.comment_post_no = #value#
+			and C.comment_user_id = U.user_id
+		order by
+			C.comment_no asc
+	</select>
+	
+	<select id="getCommentByNo" parameterClass="int" resultClass="com.sample.app.vo.Comment">
+		select
+			comment_no	as no,
+			comment_user_id as userId,
+			comment_content as content,
+			comment_created_date as createdDate,
+			comment_updated_date as updatedDate,
+			comment_post_no	as postNo
+		from
+			web_comments
+		where
+			comment_no = #value#
+	</select>
+	
+	<insert id="insertComment" parameterClass="com.sample.app.vo.Comment">
+		insert into web_comments
+			(comment_no, comment_user_id, comment_content, comment_post_no)
+		values
+			(WEB_COMMENTS_SEQ.nextval, #userId#, #content#, #postNo#)
+	</insert>
+	
+	<delete id="deleteComment" parameterClass="int">
+		delete from
+			web_comments
+		where
+			comment_no = #value#
+	</delete>
+
+</sqlMap>

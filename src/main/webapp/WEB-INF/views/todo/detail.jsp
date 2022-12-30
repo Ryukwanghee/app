@@ -108,7 +108,7 @@
 <div class="modal" tabindex="-1" id="modal-form-comments">
 	<div class="modal-dialog">
 		<form id="form-add-depts" class="p-3" method="post" action="addwork.hta">
-		<input type="hidden" name="todoNo" value="1000">
+		<input type="hidden" name="todoNo" value="${todo.no }">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title">작업 내용 등록폼</h5>
